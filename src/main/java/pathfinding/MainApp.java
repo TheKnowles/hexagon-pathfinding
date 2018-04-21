@@ -46,14 +46,16 @@ public class MainApp {
 
   public static void resetGraph(final Hex root){
     LinkedList<Hex> ll = new LinkedList<>();
+    LinkedList<Hex> processed = new LinkedList<>();
     ll.add(root);
     while(!ll.isEmpty()){
       final Hex tmp = ll.removeFirst();
       tmp.setVisited(false);
       for(Hex edge : tmp.getEdges()){
         if (edge == null) continue;
-        if(!ll.contains(edge)) ll.add(edge);
+        if(!ll.contains(edge) && !processed.contains(edge)) ll.add(edge);
       }
+      processed.add(tmp);
     }
   }
 
@@ -76,8 +78,10 @@ public class MainApp {
     }
     //simple one hex traversal
     findPath(middle, middle.getEdges()[0]);
-    //resetGraph(middle);
-    //middle.setBlocked(true);//force route around the outside
-    //findPath(middle.getEdges()[0], middle.getEdges()[3]);
+    resetGraph(middle);
+    findPath(middle.getEdges()[0], middle.getEdges()[3]);
+    resetGraph(middle);
+    middle.setBlocked(true);//force route around the outside
+    findPath(middle.getEdges()[0], middle.getEdges()[3]);
   }
 }
