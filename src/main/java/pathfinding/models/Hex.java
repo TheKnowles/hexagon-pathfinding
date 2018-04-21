@@ -2,12 +2,9 @@ package pathfinding.models;
 
 import java.lang.IllegalArgumentException;
 import java.lang.StringBuilder;
-import java.util.logging.Logger;
 
 import java.util.Map;
 import java.util.HashMap;
-
-
 
 /*
 mapping of edge of placement to edge numbers of adjacent tiles
@@ -25,11 +22,9 @@ Adjacent tiles check and assign then map that number to the other number:
 i.e. middle tile places on edge 0, you need to check edge 5 and 1 of that middle tile
     the tile of the left (5) will have the new tile in its edge 1
     vice versa for tile on the right (1) will have the new tile on its edge 5
-TODO clean up this and make it more intuitive
 */
 
 public class Hex {
-  public static final Logger logger = Logger.getLogger(Hex.class.getName());
 
   private static final Map<Integer, Integer> flipEdges = new HashMap<>();
   static {
@@ -44,11 +39,13 @@ public class Hex {
   private String id;
   private Hex[] edges;
   private boolean visited;
+  private boolean blocked;
 
   public Hex(String id){
     this.id = id;
     this.edges = new Hex[6];
     this.visited = false;
+    this.blocked = false;
   }
 
   private static int indent = 0;
@@ -79,16 +76,24 @@ public class Hex {
     --indent;
   }
 
-  public Hex[] getEdges()           {return edges;}
-  public boolean hasBeenVisited()   {return visited;}
+  public void setBlocked(boolean blocked)   {this.blocked = blocked;}
+  public void setVisited(boolean visited)   {this.visited = visited;}
+  public Hex[] getEdges()                   {return edges;}
+  public boolean isBlocked()                {return blocked;}
+  public boolean isVisited()                {return visited;}
+  public String getId()                     {return id;}
  
   public void visit(){
     this.visited = true;
   }
 
+  public boolean equals(final Hex rhs){
+    return id.equals(rhs.getId());
+  }
+
   public String toString(){
     StringBuilder sb = new StringBuilder();
-    sb.append("id: " + id);
+    sb.append(id);
     //edges?
     return sb.toString();
   }

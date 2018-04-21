@@ -1,11 +1,61 @@
 package pathfinding;
 
-import java.util.logging.Logger;
 import pathfinding.models.*;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 public class MainApp {
-  public static final Logger logger = Logger.getLogger(MainApp.class.getName());
+
+  //Breadth First Search
+  public static void findPath(final Hex start, final Hex end){
+    System.out.println("Searching from " + start.toString() + " to " + end.toString());   
+    LinkedList<Hex> ll = new LinkedList<>();
+    HashMap<String, String> path = new HashMap<>();
+    ll.add(start);
+    while(!ll.isEmpty()){
+      final Hex tmp = ll.removeFirst();
+      if(tmp.equals(end)){
+        System.out.println("Reached goal, path:");
+        //print out path
+        ArrayList<String> output = new ArrayList<>(); 
+        output.add(tmp.toString());
+        String run = tmp.toString();
+        while (path.get(run) != null){
+          output.add(path.get(run));
+          run = path.get(run);
+        }
+        Collections.reverse(output);
+        for(int i = 0; i < output.size(); i++){
+          System.out.print(output.get(i));
+          if(i < (output.size() -1)) System.out.print(" -> ");
+        }
+        System.out.println();
+      }
+      for(Hex edge : tmp.getEdges()){
+        if (edge == null || edge.isVisited() || edge.isBlocked()) continue;
+        if(!ll.contains(edge)){
+          ll.add(edge);
+          path.put(edge.toString(), tmp.toString());
+        }
+      } 
+      tmp.setVisited(true);
+    }
+  }
+
+  public static void resetGraph(final Hex root){
+    LinkedList<Hex> ll = new LinkedList<>();
+    ll.add(root);
+    while(!ll.isEmpty()){
+      final Hex tmp = ll.removeFirst();
+      tmp.setVisited(false);
+      for(Hex edge : tmp.getEdges()){
+        if (edge == null) continue;
+        if(!ll.contains(edge)) ll.add(edge);
+      }
+    }
+  }
 
   public static void main(String[] args) throws Exception{
     Hex middle = new Hex("middle tile"); 
@@ -24,5 +74,10 @@ public class MainApp {
         ++j;
       }
     }
+    //simple one hex traversal
+    findPath(middle, middle.getEdges()[0]);
+    //resetGraph(middle);
+    //middle.setBlocked(true);//force route around the outside
+    //findPath(middle.getEdges()[0], middle.getEdges()[3]);
   }
 }
