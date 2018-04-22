@@ -14,6 +14,7 @@ public class MainApp {
     LinkedList<Hex> ll = new LinkedList<>();
     HashMap<String, String> path = new HashMap<>();
     ll.add(start);
+    boolean pathFound = false;
     while(!ll.isEmpty()){
       final Hex tmp = ll.removeFirst();
       if(tmp.equals(end)){
@@ -32,6 +33,7 @@ public class MainApp {
           if(i < (output.size() -1)) System.out.print(" -> ");
         }
         System.out.println();
+        pathFound = true;
       }
       for(Hex edge : tmp.getEdges()){
         if (edge == null || edge.isVisited() || edge.isBlocked()) continue;
@@ -41,6 +43,9 @@ public class MainApp {
         }
       } 
       tmp.setVisited(true);
+    }
+    if(!pathFound){
+      System.out.println("No path possible.");
     }
   }
 
@@ -82,6 +87,11 @@ public class MainApp {
     findPath(middle.getEdges()[0], middle.getEdges()[3]);
     resetGraph(middle);
     middle.setBlocked(true);//force route around the outside
+    findPath(middle.getEdges()[0], middle.getEdges()[3]);
+    resetGraph(middle);
+    middle.setBlocked(true);//force route around the outside
+    middle.getEdges()[1].setBlocked(true);//force route around to the left 
+    middle.getEdges()[5].setBlocked(true);
     findPath(middle.getEdges()[0], middle.getEdges()[3]);
   }
 }
